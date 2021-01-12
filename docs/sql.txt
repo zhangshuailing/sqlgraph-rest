@@ -1,0 +1,28 @@
+# sql graph 最简单的流程
+# 创建表
+人物
+create table node_a(id String Key,name String,labels Array(String),create_by String,create_time String) engine V;
+组织
+create table node_b(id String Key,name String,labels Array(String),create_by String,create_time String) engine V;
+# 创建边
+#create table edge_info(id String Key,src VS(node_info),dst VD(node_info),labels Array(String),create_by String,create_time String) engine E;
+# 插入点、边表数据
+insert into node_a(id,name,labels)values('11','张帅领',['person']);
+insert into node_a(id,name,labels)values('12','姚建林',['person']);
+insert into node_a(id,name,labels)values('13','杜易霖',['person']);
+insert into node_a(id,name,labels)values('14','陈波',['person']);
+insert into node_b(id,name,labels)values('110','中科天玑数据科技股份有限公司',['person']);
+# 创建边
+create table edgeAtoB(from VS(node_b),to VD(node_a),label String) engine E;
+插入边数据
+insert into edgeAtoB(from,to,label)values('110','11','隶属');
+insert into edgeAtoB(from,to,label)values('110','12','隶属');
+insert into edgeAtoB(from,to,label)values('110','13','隶属');
+insert into edgeAtoB(from,to,label)values('110','14','隶属');
+# 创建图
+create graph graph_node_a_b as edgeGroup(edgeAtoB);
+刷新图
+refresh graph_node_a_b
+然后再执行：
+insert property graph_node_a_b select v,pagerank as _pagerank from pagerank(graph_node_a_b)
+
